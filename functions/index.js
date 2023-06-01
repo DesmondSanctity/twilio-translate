@@ -122,6 +122,8 @@ export async function handleIncomingMessage(req, res) {
         const from = req.body.From;
         const to = req.body.To;
 
+        console.log(messageBody)
+
         if (req.body.NumMedia > 0) {
             // Voice note received
             // const mediaUrl = req.body.MediaUrl;
