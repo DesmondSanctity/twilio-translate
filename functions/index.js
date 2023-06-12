@@ -101,8 +101,10 @@ async function handleVoicemailRecording(req, res) {
 
     console.log(from, to)
     try {
-        const recordingUrl = req.body.MediaUrl0; console.log(recordingUrl)
+        const recordingUrl = req.body.MediaUrl0;
+        console.log('recording', recordingUrl)
         const s3Key = `voicemail-${Date.now()}.ogg`;
+        console.log('key', s3Key)
 
         // Download the audio file from the URL
         const response = await axios.get(recordingUrl, { responseType: 'arraybuffer' });
@@ -140,7 +142,7 @@ export async function handleIncomingMessage(req, res) {
         const from = req.body.From;
         const to = req.body.To;
 
-        console.log(messageBody)
+        console.log(messageBody, to, from)
 
         if (req.body.NumMedia > 0) {
             // Voice note received
@@ -150,6 +152,8 @@ export async function handleIncomingMessage(req, res) {
             // Text message received
             // Translate the message to English
             const translatedText = await translateText(messageBody);
+
+            console.log('translate', translatedText)
 
             // Send the translated message back to the Twilio WhatsApp number
             await twilioClient.messages.create({
