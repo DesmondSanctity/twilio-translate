@@ -92,8 +92,10 @@ async function saveToS3(data, filename) {
     };
 
     try {
-        const response = await s3.putObject(params).promise();
-        console.log('Data saved to S3:', response);
+        await s3.upload(params, (err, data) => {
+            if (err) console.log(err, err.stack)
+            else console.log(`File uploaded successfully at ${data.Location}`)
+        })
     } catch (error) {
         console.error('Error saving data to S3:', error);
     }
