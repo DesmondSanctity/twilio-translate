@@ -51,7 +51,7 @@ async function transcribeAudio(s3Bucket, s3Key) {
     };
 
     try {
-        const response = await transcribe.startTranscriptionJob(params);
+        const response = transcribe.startTranscriptionJob(params);
         console.log('Transcription job started:', response.TranscriptionJob.TranscriptionJobName);
         return response
     } catch (error) {
@@ -68,9 +68,9 @@ async function translateText(text) {
     };
 
     try {
-        const response = await translate.translateText(params);
-        console.log('Translated text:', response.TranslatedText);
-        return response.TranslatedText;
+        const response = translate.translateText(params);
+        console.log('Translated text:', response);
+        return response;
     } catch (error) {
         console.error('Error translating text:', error);
     }
@@ -86,7 +86,7 @@ async function saveToS3(data, filename) {
     };
 
     try {
-        const response = await s3.putObject(params);
+        const response = s3.putObject(params);
         console.log('Data saved to S3:', response.Location);
     } catch (error) {
         console.error('Error saving data to S3:', error);
@@ -157,8 +157,8 @@ export async function handleIncomingMessage(req, res) {
 
             // Send the translated message back to the Twilio WhatsApp number
             await twilioClient.messages.create({
-                from: to,
-                to: from,
+                from: 'whatsapp:+14155238886',
+                to: 'whatsapp:+2349059391242',
                 body: `Translated message: ${translatedText}`,
             });
 
