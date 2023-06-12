@@ -157,9 +157,9 @@ export async function handleIncomingMessage(req, res) {
 
             // Send the translated message back to the Twilio WhatsApp number
             await twilioClient.messages.create({
-                from: 'whatsapp:+14155238886',
-                to: 'whatsapp:+2349059391242',
-                body: `Translated message: ${translatedText}`,
+                from: "whatsapp:+14155238886",
+                to: "whatsapp:+2349059391242",
+                body: `Translated message: ${translatedText? translatedText : 'Sorry an error occured'}`,
             });
 
             // Send a response back to the Twilio API
