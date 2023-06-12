@@ -93,7 +93,7 @@ async function saveToS3(data, filename) {
 
     try {
         const response = await s3.putObject(params).promise();
-        console.log('Data saved to S3:', response.Location);
+        console.log('Data saved to S3:', response);
     } catch (error) {
         console.error('Error saving data to S3:', error);
     }
