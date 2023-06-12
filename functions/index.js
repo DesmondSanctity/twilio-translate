@@ -105,7 +105,7 @@ async function handleVoicemailRecording(req, res) {
 
         // Download the audio file from the URL
         const response = await axios.get(recordingUrl, { responseType: 'arraybuffer' });
-        const audioData = response.data;
+        const audioData = response.data; console.log(audioData)
 
         // Save the audio file locally
         const rootDirectory = path.resolve(__dirname, 'twilio-translate'); // Assuming this is the root directory of your project
