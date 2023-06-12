@@ -45,7 +45,7 @@ async function transcribeAudio(s3Bucket, s3Key, from, to) {
     const params = {
         LanguageCode: 'en-US',
         Media: { MediaFileUri: `s3://${s3Bucket}/${s3Key}` },
-        TranscriptionJobName: 'transcribe-job',
+        TranscriptionJobName: `transcribe-job-${s3Key}`,
     };
 
     try {
