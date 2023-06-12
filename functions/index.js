@@ -1,19 +1,11 @@
 import twilio from 'twilio';
-import AWS from '@aws-sdk/client-s3';
-import AWSTc from '@aws-sdk/client-transcribe'
-import AWSTl from '@aws-sdk/client-translate';
+import AWS from 'aws-sdk';
 import axios from 'axios';
-import fs from 'fs'
-import path from 'path';
-import { fileURLToPath } from 'url';
 
 import dotenv from 'dotenv'
 
 
 dotenv.config()
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // Twilio credentials
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
@@ -32,8 +24,8 @@ const twilioClient = twilio(accountSid, authToken);
 
 // Set up AWS clients
 const s3 = new AWS.S3({ accessKeyId, secretAccessKey, region });
-const transcribe = new AWSTc.Transcribe({ accessKeyId, secretAccessKey, region });
-const translate = new AWSTl.Translate({ accessKeyId, secretAccessKey, region });
+const transcribe = new AWS.TranscribeService({ accessKeyId, secretAccessKey, region });
+const translate = new AWS.Translate({ accessKeyId, secretAccessKey, region });
 
 // Function to send voice note to Twilio WhatsApp number
 async function sendVoiceNoteToTwilio(from, to, mediaUrl) {
@@ -61,6 +53,7 @@ async function transcribeAudio(s3Bucket, s3Key) {
     try {
         const response = await transcribe.startTranscriptionJob(params);
         console.log('Transcription job started:', response.TranscriptionJob.TranscriptionJobName);
+        return response
     } catch (error) {
         console.error('Error starting transcription job:', error);
     }
@@ -102,8 +95,11 @@ async function saveToS3(data, filename) {
 
 // Handle voicemail recording
 async function handleVoicemailRecording(req, res) {
-    const body = req.body;
-    console.log(body);
+
+    const from = req.body.From;
+    const to = req.body.To;
+
+    console.log(from, to)
     try {
         const recordingUrl = req.body.MediaUrl0; console.log(recordingUrl)
         const s3Key = `voicemail-${Date.now()}.ogg`;
@@ -112,20 +108,21 @@ async function handleVoicemailRecording(req, res) {
         const response = await axios.get(recordingUrl, { responseType: 'arraybuffer' });
         const audioData = response.data; console.log(audioData)
 
-        // Save the audio file locally
-        // const rootDirectory = path.resolve(__dirname, '.'); // Assuming this is the root directory of your project
-        // const audioFolderPath = path.join(rootDirectory, 'audio');
-        // const localFilePath = path.join(audioFolderPath, `${s3Key}`);
-        // fs.writeFileSync(localFilePath, audioData);
-
         // Send the voicemail recording to Twilio WhatsApp number
-        sendVoiceNoteToTwilio(twilioPhoneNumber, phoneNumber, recordingUrl);
+        // sendVoiceNoteToTwilio(twilioPhoneNumber, phoneNumber, recordingUrl);
 
         // Send the voicemail to s3 bucket
         saveToS3(audioData, s3Key);
 
         // Transcribe the audio using AWS Transcribe
-        transcribeAudio(bucketName, s3Key);
+        const transcribe = transcribeAudio(bucketName, s3Key);
+
+        // Send the translated message back to the Twilio WhatsApp number
+        await twilioClient.messages.create({
+            from: to,
+            to: from,
+            body: `Translated message: ${transcribe}`,
+        });
 
         // Send a response back to the Twilio API
         res.set('Content-Type', 'text/xml');

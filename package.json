@@ -22,9 +22,7 @@
   "author": "Desmond Obisi",
   "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.332.0",
-    "@aws-sdk/client-transcribe": "^3.332.0",
-    "@aws-sdk/client-translate": "^3.342.0",
+    "aws-sdk": "^2.1395.0",
     "axios": "^1.4.0",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
