@@ -99,12 +99,8 @@ async function translateText(text, from, to) {
                 // Use translation which is the translated text
                 console.log('here', translation)
 
-                // Send the translated message back to the Twilio WhatsApp number
-                twilioClient.messages.create({
-                    from: to,
-                    to: from,
-                    body: `Translated message: ${translation ? translation : 'Sorry an error occured'}`,
-                });
+                // Send the text translated to Twilio WhatsApp number
+                sendResponseToWhatsappText(to, from, translation);
             }
         })
     } catch (error) {
