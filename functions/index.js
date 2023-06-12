@@ -93,7 +93,8 @@ async function saveToS3(data, filename) {
 
 // Handle voicemail recording
 async function handleVoicemailRecording(req, res) {
-    const body = req.body; console.log(body)
+    const body = req.body; 
+    console.log(body);
     try {
         const recordingUrl = req.body.RecordingUrl; console.log(recordingUrl)
         const s3Key = `voicemail-${Date.now()}.mp3`;
