@@ -49,9 +49,16 @@ async function transcribeAudio(s3Bucket, s3Key) {
     };
 
     try {
-        const response = transcribe.startTranscriptionJob(params);
-        console.log('Transcription job started:', response);
-        return response
+
+        const transcribetext = await transcribe.startTranscriptionJob(params).promise()
+        const jobId = transcribetext.TranscriptionJob.TranscriptionJobName
+        const data = await transcribe.getTranscriptionJob({ TranscriptionJobName: jobId }).promise()
+
+        console.log(data)
+
+        const transcript = data.TranscriptionJob.Transcript.TranscriptFileUri
+
+        return transcript
     } catch (error) {
         console.error('Error starting transcription job:', error);
     }
