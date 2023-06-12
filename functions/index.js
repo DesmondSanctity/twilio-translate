@@ -89,6 +89,7 @@ async function translateText(text, from, to) {
     };
 
     console.log(params)
+    console.log(from, to)
 
     try {
         translate.translateText(params, (err, data) => {
