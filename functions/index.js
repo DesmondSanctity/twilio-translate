@@ -17,7 +17,7 @@ const twilioPhoneNumber = process.env.TWILIO_PHONE_NUMBER;
 const accessKeyId = process.env.MY_AWS_ACCESS_KEY_ID;
 const secretAccessKey = process.env.MY_AWS_SECRET_ACCESS_KEY;
 const region = process.env.MY_AWS_REGION;
-const bucketName = process.env.MY_AWS_S3_BUCKET;
+const bucketName = `${process.env.MY_AWS_S3_BUCKET}`;
 
 // Set up Twilio client
 const twilioClient = twilio(accountSid, authToken);
