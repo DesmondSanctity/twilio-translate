@@ -25,7 +25,7 @@ const phoneNumber = 'whatsapp:+2349059391242'
 const accessKeyId = process.env.MY_AWS_ACCESS_KEY_ID;
 const secretAccessKey = process.env.MY_AWS_SECRET_ACCESS_KEY;
 const region = process.env.MY_AWS_REGION;
-const bucketName = 'twilio-record/incoming';
+const bucketName = 'twilio-record';
 
 // Set up Twilio client
 const twilioClient = twilio(accountSid, authToken);
