@@ -84,7 +84,7 @@ async function saveToS3(data, filename) {
     };
 
     try {
-        const response = await s3.upload(params);
+        const response = await s3.putObject(params).promise();;
         console.log('Data saved to S3:', response.Location);
     } catch (error) {
         console.error('Error saving data to S3:', error);
@@ -94,7 +94,7 @@ async function saveToS3(data, filename) {
 // Handle voicemail recording
 async function handleVoicemailRecording(req, res) {
     try {
-        const recordingUrl = req.body.RecordingUrl;
+        const recordingUrl = req.body.RecordingUrl; console.log(recordingUrl)
         const s3Key = `voicemail-${Date.now()}.mp3`;
 
         // Send the voicemail recording to Twilio WhatsApp number
