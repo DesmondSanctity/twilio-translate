@@ -50,7 +50,7 @@ async function transcribeAudio(s3Bucket, s3Key) {
 
     try {
         const response = transcribe.startTranscriptionJob(params);
-        console.log('Transcription job started:', response.TranscriptionJob.TranscriptionJobName);
+        console.log('Transcription job started:', response);
         return response
     } catch (error) {
         console.error('Error starting transcription job:', error);
@@ -109,7 +109,7 @@ async function handleVoicemailRecording(req, res) {
     try {
         const recordingUrl = req.body.MediaUrl0;
         console.log('recording', recordingUrl)
-        const s3Key = `voicemail-${Date.now()}.ogg`;
+        const s3Key = `recording-${Date.now()}`;
         console.log('key', s3Key)
 
         // Download the audio file from the URL
@@ -123,14 +123,7 @@ async function handleVoicemailRecording(req, res) {
         saveToS3(audioData, s3Key);
 
         // Transcribe the audio using AWS Transcribe
-        const transcribe = transcribeAudio(bucketName, s3Key);
-
-        // Send the translated message back to the Twilio WhatsApp number
-        await twilioClient.messages.create({
-            from: to,
-            to: from,
-            body: `Translated message: ${transcribe}`,
-        });
+        transcribeAudio(bucketName, s3Key);
 
         // Send a response back to the Twilio API
         res.set('Content-Type', 'text/xml');
