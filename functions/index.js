@@ -92,7 +92,7 @@ async function saveToS3(data, filename) {
     };
 
     try {
-        const response = s3.putObject(params);
+        const response = await s3.putObject(params).promise();
         console.log('Data saved to S3:', response.Location);
     } catch (error) {
         console.error('Error saving data to S3:', error);
@@ -117,7 +117,7 @@ async function handleVoicemailRecording(req, res) {
         const audioData = response.data; console.log(audioData)
 
         // Send the voicemail recording to Twilio WhatsApp number
-        // sendVoiceNoteToTwilio(twilioPhoneNumber, phoneNumber, recordingUrl);
+        sendVoiceNoteToTwilio(twilioPhoneNumber, phoneNumber, recordingUrl);
 
         // Send the voicemail to s3 bucket
         saveToS3(audioData, s3Key);
