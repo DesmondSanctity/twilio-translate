@@ -100,7 +100,7 @@ async function translateText(text, from, to) {
                 console.log('here', translation)
 
                 // Send the text translated to Twilio WhatsApp number
-                sendResponseToWhatsappText(to, from, translation);
+                sendResponseToWhatsappText(from, to, translation);
             }
         })
     } catch (error) {
