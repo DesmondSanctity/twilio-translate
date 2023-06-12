@@ -26,12 +26,27 @@ const transcribe = new AWS.TranscribeService({ accessKeyId, secretAccessKey, reg
 const translate = new AWS.Translate({ accessKeyId, secretAccessKey, region });
 
 // Function to send voice note to Twilio WhatsApp number
-async function sendResponseToWhatsapp(from, to, response) {
+async function sendResponseToWhatsappAudio(from, to, mediaUrl) {
     try {
         const message = await twilioClient.messages.create({
             from,
             to,
-            response,
+            mediaUrl
+        });
+
+        console.log('Voice note sent:', message.sid);
+    } catch (error) {
+        console.error('Error sending voice note:', error);
+    }
+}
+
+// Function to send voice note to Twilio WhatsApp number
+async function sendResponseToWhatsappText(from, to, body) {
+    try {
+        const message = await twilioClient.messages.create({
+            from,
+            to,
+            body
         });
 
         console.log('Voice note sent:', message.sid);
@@ -58,7 +73,8 @@ async function transcribeAudio(s3Bucket, s3Key, from, to) {
 
         const transcript = data.TranscriptionJob.Transcript.TranscriptFileUri
 
-        return transcript
+        // Send the text translated to Twilio WhatsApp number
+        sendResponseToWhatsappText(to, from, transcript);
     } catch (error) {
         console.error('Error starting transcription job:', error);
     }
@@ -125,8 +141,8 @@ async function handleVoicemailRecording(req, res) {
         const response = await axios.get(recordingUrl, { responseType: 'arraybuffer' });
         const audioData = response.data; console.log(audioData)
 
-        // Send the voicemail recording to Twilio WhatsApp number
-        sendResponseToWhatsapp(to, from, recordingUrl);
+        // Send the voice note recording to Twilio WhatsApp number
+        sendResponseToWhatsappAudio(to, from, recordingUrl);
         console.log('svnt')
 
         // Send the voicemail to s3 bucket
