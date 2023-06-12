@@ -25,6 +25,7 @@
     "@aws-sdk/client-s3": "^3.332.0",
     "@aws-sdk/client-transcribe": "^3.332.0",
     "@aws-sdk/client-translate": "^3.342.0",
+    "axios": "^1.4.0",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^16.1.3",
