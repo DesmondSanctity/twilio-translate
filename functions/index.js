@@ -97,7 +97,13 @@ async function translateText(text) {
                 const translation = data.TranslatedText; console.log('data', data)
                 // Use translation which is the translated text
                 console.log('here', translation)
-                return translation
+
+                // Send the translated message back to the Twilio WhatsApp number
+                twilioClient.messages.create({
+                    from: to,
+                    to: from,
+                    body: `Translated message: ${translation ? translation : 'Sorry an error occured'}`,
+                });
             }
         })
     } catch (error) {
@@ -178,16 +184,7 @@ export async function handleIncomingMessage(req, res) {
         } else {
             // Text message received
             // Translate the message to English
-            const translatedText = await translateText(messageBody);
-
-            console.log('translate', translatedText)
-
-            // Send the translated message back to the Twilio WhatsApp number
-            await twilioClient.messages.create({
-                from: to,
-                to: from,
-                body: `Translated message: ${translatedText ? translatedText : 'Sorry an error occured'}`,
-            });
+            await translateText(messageBody);
 
             // Send a response back to the Twilio API
             res.set('Content-Type', 'text/xml');
