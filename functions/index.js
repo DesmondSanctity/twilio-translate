@@ -81,7 +81,7 @@ async function transcribeAudio(s3Bucket, s3Key, from, to) {
 }
 
 // Function to translate text using AWS Translate
-async function translateText(text) {
+async function translateText(text, from, to) {
     const params = {
         Text: text,
         SourceLanguageCode: 'auto',
@@ -184,7 +184,7 @@ export async function handleIncomingMessage(req, res) {
         } else {
             // Text message received
             // Translate the message to English
-            await translateText(messageBody);
+            await translateText(messageBody, to, from);
 
             // Send a response back to the Twilio API
             res.set('Content-Type', 'text/xml');
