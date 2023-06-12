@@ -71,6 +71,7 @@ async function translateText(text) {
             else {
                 const translation = data.TranslatedText
                 // Use translation which is the translated text
+                console.log(translation)
                 return translation
             }
         })
