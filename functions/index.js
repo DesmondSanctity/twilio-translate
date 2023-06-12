@@ -10,8 +10,6 @@ dotenv.config()
 // Twilio credentials
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
-const twilioPhoneNumber = process.env.TWILIO_PHONE_NUMBER;
-const phoneNumber = 'whatsapp:+2349059391242'
 
 // AWS credentials
 const accessKeyId = process.env.MY_AWS_ACCESS_KEY_ID;
@@ -162,7 +160,7 @@ export async function handleIncomingMessage(req, res) {
 
             // Send the translated message back to the Twilio WhatsApp number
             await twilioClient.messages.create({
-                from: "whatsapp:+14155238886",
+                from: "+14155238886",
                 to: "whatsapp:+2349059391242",
                 body: `Translated message: ${translatedText ? translatedText : 'Sorry an error occured'}`,
             });
