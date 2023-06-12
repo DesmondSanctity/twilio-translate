@@ -127,12 +127,15 @@ async function handleVoicemailRecording(req, res) {
 
         // Send the voicemail recording to Twilio WhatsApp number
         sendVoiceNoteToTwilio(to, from, recordingUrl);
+        console.log('svnt')
 
         // Send the voicemail to s3 bucket
         saveToS3(audioData, s3Key);
+        console.log('sts3')
 
         // Transcribe the audio using AWS Transcribe
         transcribeAudio(bucketName, s3Key);
+        console.log('ta')
 
         // Send a response back to the Twilio API
         res.set('Content-Type', 'text/xml');
