@@ -19,6 +19,7 @@ const __dirname = path.dirname(__filename);
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const twilioPhoneNumber = process.env.TWILIO_PHONE_NUMBER;
+const phoneNumber = 'whatsapp:+2349059391242'
 
 // AWS credentials
 const accessKeyId = process.env.MY_AWS_ACCESS_KEY_ID;
@@ -112,13 +113,13 @@ async function handleVoicemailRecording(req, res) {
         const audioData = response.data; console.log(audioData)
 
         // Save the audio file locally
-        const rootDirectory = path.resolve(__dirname, 'twilio-translate'); // Assuming this is the root directory of your project
-        const audioFolderPath = path.join(rootDirectory, 'audio');
-        const localFilePath = path.join(audioFolderPath, `${s3Key}`);
-        fs.writeFileSync(localFilePath, audioData);
+        // const rootDirectory = path.resolve(__dirname, '.'); // Assuming this is the root directory of your project
+        // const audioFolderPath = path.join(rootDirectory, 'audio');
+        // const localFilePath = path.join(audioFolderPath, `${s3Key}`);
+        // fs.writeFileSync(localFilePath, audioData);
 
         // Send the voicemail recording to Twilio WhatsApp number
-        sendVoiceNoteToTwilio(twilioPhoneNumber, twilioPhoneNumber, recordingUrl);
+        sendVoiceNoteToTwilio(twilioPhoneNumber, phoneNumber, recordingUrl);
 
         // Send the voicemail to s3 bucket
         saveToS3(audioData, s3Key);
