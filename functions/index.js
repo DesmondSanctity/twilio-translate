@@ -26,12 +26,12 @@ const transcribe = new AWS.TranscribeService({ accessKeyId, secretAccessKey, reg
 const translate = new AWS.Translate({ accessKeyId, secretAccessKey, region });
 
 // Function to send voice note to Twilio WhatsApp number
-async function sendVoiceNoteToTwilio(from, to, mediaUrl) {
+async function sendResponseToWhatsapp(from, to, response) {
     try {
         const message = await twilioClient.messages.create({
             from,
             to,
-            mediaUrl,
+            response,
         });
 
         console.log('Voice note sent:', message.sid);
@@ -41,7 +41,7 @@ async function sendVoiceNoteToTwilio(from, to, mediaUrl) {
 }
 
 // Function to transcribe audio using AWS Transcribe
-async function transcribeAudio(s3Bucket, s3Key) {
+async function transcribeAudio(s3Bucket, s3Key, from, to) {
     const params = {
         LanguageCode: 'en-US',
         Media: { MediaFileUri: `s3://${s3Bucket}/${s3Key}` },
@@ -126,7 +126,7 @@ async function handleVoicemailRecording(req, res) {
         const audioData = response.data; console.log(audioData)
 
         // Send the voicemail recording to Twilio WhatsApp number
-        sendVoiceNoteToTwilio(to, from, recordingUrl);
+        sendResponseToWhatsapp(to, from, recordingUrl);
         console.log('svnt')
 
         // Send the voicemail to s3 bucket
@@ -134,14 +134,14 @@ async function handleVoicemailRecording(req, res) {
         console.log('sts3')
 
         // Transcribe the audio using AWS Transcribe
-        transcribeAudio(bucketName, s3Key);
+        transcribeAudio(bucketName, s3Key, from, to);
         console.log('ta')
 
         // Send a response back to the Twilio API
         res.set('Content-Type', 'text/xml');
         res.send('<Response><Say>Thank you for leaving a voice note.</Say></Response>');
     } catch (error) {
-        console.error('Error handling voicemail recording:', error);
+        console.error('Error handling text or recording:', error);
         res.status(500).send('An error occurred.');
     }
 }
@@ -153,7 +153,7 @@ export async function handleIncomingMessage(req, res) {
         const from = req.body.From;
         const to = req.body.To;
 
-        console.log(messageBody, to, from)
+        console.log(messageBody, from, to)
 
         if (req.body.NumMedia > 0) {
             // Voice note received
