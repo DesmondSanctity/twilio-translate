@@ -1,7 +1,7 @@
 {
   "name": "twilio-transcribe",
   "version": "1.0.0",
-  "description": "A Whatsapp voice call/note transcription app built with Twilio programmable voice and AWS Transcribe",
+  "description": "A Whatsapp text translation app built with Twilio WhatsApp and AWS Translate",
   "main": "server.js",
   "type": "module",
   "scripts": {
@@ -23,7 +23,6 @@
   "license": "ISC",
   "dependencies": {
     "aws-sdk": "^2.1395.0",
-    "axios": "^1.4.0",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^16.1.3",
