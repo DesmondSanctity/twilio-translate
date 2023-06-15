@@ -23,63 +23,41 @@ const translate = new AWS.Translate({ accessKeyId, secretAccessKey, region });
 
 
 // Function to send voice note to Twilio WhatsApp number
-async function sendResponseToWhatsappText(from, to, body) {
-    try {
-        const message = await twilioClient.messages.create({
-            from,
-            to,
-            body
-        });
-
-        console.log('Voice note sent:', message.sid);
-    } catch (error) {
-        console.error('Error sending voice note:', error);
-    }
+export async function sendResponseToWhatsappText(from, to, text) {
+    // Use Twilio API to send `text` message from `from` to `to` number  
+    await twilioClient.messages.create({
+        to,
+        from,
+        body: text
+    });
 }
 
-// Function to translate text using AWS Translate
-async function translateText(text, from, to) {
+export async function translateText(text) {
     const params = {
         Text: text,
         SourceLanguageCode: 'auto',
         TargetLanguageCode: 'en',
     };
 
-    console.log(params)
-    console.log(from, to)
-
-    try {
+    return new Promise((resolve, reject) => {
         translate.translateText(params, (err, data) => {
-            if (err) console.log(err, err.stack)
+            if (err) reject(err);
             else {
-                const translation = data.TranslatedText; console.log('data', data)
-                // Use translation which is the translated text
-                console.log('here', translation)
-
-                // Send the text translated to Twilio WhatsApp number
-                sendResponseToWhatsappText(from, to, translation);
+                const translation = data.TranslatedText;
+                resolve(translation);
             }
-        })
-    } catch (error) {
-        console.error('Error translating text:', error);
-    }
+        });
+    });
 }
 
 // Function to handle incoming messages
 export async function handleIncomingMessage(req, res) {
     try {
-        const messageBody = req.body.Body;
-        const from = req.body.From;
-        const to = req.body.To;
+        const { Body, from, to } = req.body;
 
-        console.log(messageBody, from, to)
+        let translation = await translateText(Body);
 
-        // Translate the message to English
-        await translateText(messageBody, to, from);
-
-        // Send a response back to the Twilio API
-        res.set('Content-Type', 'text/xml');
-        res.send('<Response></Response>');
+        sendResponseToWhatsappText(to, from, translation);
 
     } catch (error) {
         console.error('Error handling incoming message:', error);
