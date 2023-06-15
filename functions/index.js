@@ -33,7 +33,7 @@ export async function sendResponseToWhatsappText(from, to, text) {
     });
 }
 
-export async function translateText(text) {
+async function translateText(text) {
     const params = {
         Text: text,
         SourceLanguageCode: 'auto',
@@ -42,6 +42,7 @@ export async function translateText(text) {
 
     return new Promise((resolve, reject) => {
         translate.translateText(params, (err, data) => {
+            console.log(data)
             if (err) reject(err);
             else {
                 const translation = data.TranslatedText;
