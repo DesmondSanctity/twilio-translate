@@ -54,12 +54,12 @@ export async function translateText(text) {
 // Function to handle incoming messages
 export async function handleIncomingMessage(req, res) {
     try {
-        const { Body, from, to } = req.body;
-        console.log(Body, from, to)
+        const { Body, From, To } = req.body;
+        console.log(Body, From, To)
 
         let translation = await translateText(Body);
 
-        sendResponseToWhatsappText(to, from, translation);
+        sendResponseToWhatsappText(To, From, translation);
 
     } catch (error) {
         console.error('Error handling incoming message:', error);
