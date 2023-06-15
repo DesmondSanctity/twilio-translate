@@ -45,7 +45,7 @@ async function translateText(text) {
             console.log(data)
             if (err) reject(err);
             else {
-                const translation = data.TranslatedText;
+                const translation =  `Your translation from ${data.SourceLanguageCode} to ${data.TargetLanguageCode} is: \n ${data.TranslatedText}`;
                 resolve(translation);
             }
         });
