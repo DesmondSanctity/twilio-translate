@@ -26,8 +26,8 @@ const translate = new AWS.Translate({ accessKeyId, secretAccessKey, region });
 export async function sendResponseToWhatsappText(from, to, text) {
     // Use Twilio API to send `text` message from `from` to `to` number  
     await twilioClient.messages.create({
-        to,
-        from,
+        to: from,
+        from: to,
         body: text
     });
 }
