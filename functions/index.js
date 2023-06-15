@@ -24,7 +24,6 @@ const translate = new AWS.Translate({ accessKeyId, secretAccessKey, region });
 
 // Function to send voice note to Twilio WhatsApp number
 export async function sendResponseToWhatsappText(from, to, text) {
-    console.log(from, to, text)
     // Use Twilio API to send `text` message from `from` to `to` number  
     await twilioClient.messages.create({
         to: to,
@@ -42,7 +41,6 @@ async function translateText(text) {
 
     return new Promise((resolve, reject) => {
         translate.translateText(params, (err, data) => {
-            console.log(data)
             if (err) reject(err);
             else {
                 const translation =  `Your translation from ${data.SourceLanguageCode} to ${data.TargetLanguageCode} is: \n ${data.TranslatedText}`;
@@ -56,14 +54,12 @@ async function translateText(text) {
 export async function handleIncomingMessage(req, res) {
     try {
         const { Body, From, To } = req.body;
-        console.log(Body, From, To)
 
         let translation = await translateText(Body);
 
         sendResponseToWhatsappText(To, From, translation);
 
     } catch (error) {
-        console.error('Error handling incoming message:', error);
-        res.status(500).send('An error occurred.');
+        res.status(500).send(error);
     }
 }
